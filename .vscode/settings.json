@@ -1,0 +1,19 @@
+{
+  "prettier.enable": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "goldRight.templateDirectoryPath": "/Users/tezign/Desktop/Tezign workFlow/Mind-code/templates",
+  "cSpell.words": [
+    "antfu",
+    "bumpp",
+    "dohooo",
+    "esno",
+    "pnpm",
+    "tsup",
+    "typecheck",
+    "vite",
+    "vitest"
+  ]
+  
+}

@@ -1,0 +1,33 @@
+{
+  "paths": [
+    { 
+      "directory": "src/pages",
+      "templates": ["components", "hooks"]
+    },
+    {
+      "directory": "src/hooks",
+      "templates": ["hooks"]
+    }
+  ],
+  "templatesConfig": [
+    {
+      "templateName": "components",
+      "inputsVariables": [
+        {
+          "key": "[COMPONENT_NAME]",
+          "title": "Please input component name.",
+          "required": true
+        }
+      ]
+    },
+    {
+      "templateName": "hooks",
+      "inputsVariables": [
+        {
+          "key": "[HOOKS_NAME]",
+          "title": "Please input hooks name."
+        }
+      ]
+    }
+  ]
+}
