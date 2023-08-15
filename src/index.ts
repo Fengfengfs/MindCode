@@ -9,9 +9,11 @@ import { getConfig } from './utils/config'
 import { getSomeOfPRD } from './api/api'
 import { fileCreateExtension } from './fileCreatExtension'
 import { extension } from './extension'
-import { $subject, changeMyVariable, myVariable } from './sharedVariable'
+import { $subject, changeMyVariable } from './sharedVariable'
+import { mockData } from './mockData'
+import { NodeDependenciesProvider } from './nodeDependencies'
 
-function walkDir(dir: string, callback: (path: string) => void) {
+export function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((filePath) => {
     const dirPath = join(dir, filePath)
     const isDirectory = fs.statSync(dirPath).isDirectory()
@@ -21,7 +23,7 @@ function walkDir(dir: string, callback: (path: string) => void) {
   })
 }
 
-const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
+export const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
   fs.mkdir(dirname(path), { recursive: true }, (err) => {
     if (err)
       return cb(err)
@@ -29,10 +31,11 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
     fs.writeFile(path, contents, cb)
   })
 }
-changeMyVariable({a:1,b:2})
+changeMyVariable({ a: 1, b: 2 })
 debugger
-$subject.next({a:1,b:2})
+$subject.next({ a: 1, b: 2 })
 export async function activate(context: ExtensionContext) {
+  const workspaceState = context.workspaceState
   extension(context)
   async function create(params: {
     targetPath: string
@@ -106,8 +109,8 @@ export async function activate(context: ExtensionContext) {
   /** 创建输入需求 */
   async function createReq() {
     const value = await window.showInputBox({ title: 'prd' })
-    const data = await getSomeOfPRD(value as string)
-    // window.data = data
+    // const data = await getSomeOfPRD(value as string)
+    workspaceState.update('myExtension.globalVariable', mockData)
     window.showInformationMessage(
       'Successful create!',
     )
@@ -171,12 +174,30 @@ export async function activate(context: ExtensionContext) {
     /** 创建需求 */
     const requirement = commands.registerCommand(
       'Mind-code.requirement', (param) => {
+        const _templateDirectoryPath = workspace
+          .getConfiguration('goldRight')
+          .get('templateDirectoryPath') as string
+
+        if (!_templateDirectoryPath) {
+          window.showErrorMessage(
+            'The property of \'goldRight.templateDirectoryPath\' is not set.',
+          )
+          return
+        }
+        const templateDirectoryPath = isAbsolute(_templateDirectoryPath) ? _templateDirectoryPath : join(workspacePath, _templateDirectoryPath)
+        const folderPath = param.path
+
+        workspaceState.update('myExtension.folderPath', folderPath)
+        workspaceState.update('myExtension.templateDirectoryPath', templateDirectoryPath)
         createReq()
       },
     )
     context.subscriptions.push(requirement)
     /** 创建文件 */
     fileCreateExtension(context)
+    window.createTreeView('ftpExplorer', {
+      treeDataProvider: new NodeDependenciesProvider(workspacePath),
+    })
   }
   else {
     window.showErrorMessage('Please open a workspace first!')

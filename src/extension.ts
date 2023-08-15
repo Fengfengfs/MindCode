@@ -2,15 +2,15 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode'
 import { TTTreeNode, testdata } from './treedata'
-import { childrenMockData, mockData } from './mockData'
 import { $subject, myVariable } from './sharedVariable'
+import { childrenMockData } from './mockData'
 
 export function extension(context: vscode.ExtensionContext) {
   testCustomView(context)
-$subject.subscribe((data) =>{
-  debugger
-  console.log(data)
-})
+  $subject.subscribe((data) => {
+    debugger
+    console.log(data)
+  })
   const outputchannel = vscode.window.createOutputChannel('mychannel')
   const cmdtree = vscode.commands.registerCommand(
     'data.showme',
@@ -34,11 +34,16 @@ $subject.subscribe((data) =>{
 function addChildrenTree(context: vscode.ExtensionContext, parent: TTTreeNode) {
   testCustomView(context, parent)
 }
+
 function testCustomView(context: vscode.ExtensionContext, parent?: TTTreeNode) {
+  // 获取 workspaceState 全局变量
+  const workspaceState = context.workspaceState
+  // 获取全局变量的值
+  const globalVariable = workspaceState.get('myExtension.globalVariable')
   const tdata = new testdata()
-  const c01 = new TTTreeNode(mockData.name)
+  const c01 = new TTTreeNode(globalVariable.name)
   tdata.root.children.push(c01)
-  mockData.children.map((item) => {
+  globalVariable.children.map((item) => {
     const c02 = new TTTreeNode(item.name)
     c01.children.push(c02)
     item.children?.map((child) => {

@@ -44,6 +44,22 @@
   },
   "contributes": {
     "commands": [
+			{
+				"command": "ftpExplorer.refresh",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "ftpExplorer.openFtpResource",
+				"title": "Open FTP Resource"
+			},
+			{
+				"command": "ftpExplorer.revealResource",
+				"title": "Reveal in FTP View"
+			},
       {
         "command": "Mind-code.createFileFromTemplate",
         "title": "Create File From Template"
@@ -84,13 +100,29 @@
 					"id": "data",
 					"name": "data"
 				}
-			]
+			],
+      "explorer": [
+				{
+					"id": "ftpExplorer",
+					"name": "FTP Explorer"
+				}
+      ]
 		},
     "menus": {
+			"commandPalette": [
+				{
+					"command": "ftpExplorer.revealResource"
+				}
+			],
 			"view/title": [
 				{
 					"command": "data.create",
 					"group": "1_modification"
+				},
+				{
+					"command": "ftpExplorer.refresh",
+					"when": "view == ftpExplorer",
+					"group": "navigation"
 				}
 			],
 			"view/item/context":[
@@ -108,11 +140,7 @@
         {
           "command": "Mind-code.requirement",
           "group": "1_modification"
-        },
-				{
-					"command": "data.create",
-					"group": "1_modification"
-				}
+        }
       ]
     },
     "configuration": {

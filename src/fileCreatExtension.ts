@@ -1,25 +1,24 @@
 import fs, { readFileSync, statSync } from 'fs'
-import { isAbsolute, join } from 'path'
+import { join } from 'path'
 import type * as vscode from 'vscode'
-import { commands, window, workspace } from 'vscode'
-import { mockData } from './mockData'
+import { commands, window } from 'vscode'
 import { fillPath } from './utils/path'
 import type { Variables } from './utils/processContent'
 import { injectVariables } from './utils/processContent'
 import { getConfig } from './utils/config'
+import { walkDir, writeFile } from './index'
 
 export function fileCreateExtension(context: vscode.ExtensionContext) {
+    // 获取 workspaceState 全局变量
+    const workspaceState = context.workspaceState
     /** 创建文件 */
     async function createFile(params: {
         targetPath: string
         templateName: string
-        templateDirectoryPath: string
         fileName: string
     }) {
-        const { targetPath, templateName, templateDirectoryPath, fileName } = params
-
-        const config = getConfig(templateDirectoryPath)
-        const templateConfig = config?.templatesConfig?.find(template => template.templateName === templateName)
+        const templateDirectoryPath = workspaceState.get('myExtension.templateDirectoryPath') as string
+        const { targetPath, templateName, fileName } = params
 
         const variables: Variables = []
         if (fileName) {
@@ -48,27 +47,21 @@ export function fileCreateExtension(context: vscode.ExtensionContext) {
         }
 
         window.showInformationMessage(
-            'Successful create!',
+            'Successful create files!',
         )
     }
 
     const createTree = commands.registerCommand(
         'data.create',
-        (param) => {
-            const _templateDirectoryPath = workspace
-                .getConfiguration('goldRight')
-                .get('templateDirectoryPath') as string
-
-            if (!_templateDirectoryPath) {
-                window.showErrorMessage(
-                    'The property of \'goldRight.templateDirectoryPath\' is not set.',
-                )
-                return
-            }
-            const templateDirectoryPath = isAbsolute(_templateDirectoryPath) ? _templateDirectoryPath : join(workspacePath, _templateDirectoryPath)
+        () => {
+            const outputchannel = window.createOutputChannel('mychannel')
+            outputchannel.show()
+            const templateDirectoryPath = workspaceState.get('myExtension.templateDirectoryPath')
             const config = getConfig(templateDirectoryPath)
             const paths = config?.paths || []
-            const folderPath = param.path
+            outputchannel.appendLine(`paths:${templateDirectoryPath}`)
+
+            const folderPath = workspaceState.get('myExtension.folderPath')
 
             const path = paths.find((path) => {
                 if (path)
@@ -81,15 +74,12 @@ export function fileCreateExtension(context: vscode.ExtensionContext) {
                 window.showInformationMessage('Current directory doesn\'t have a template.')
                 return
             }
-            const outputchannel = window.createOutputChannel('mychannel')
-            outputchannel.show()
 
             const treeCreate = async (d, targetPath) => {
                 outputchannel.appendLine(`picked=${fillPath(targetPath)}`)
                 await createFile({
                     targetPath: fillPath(targetPath),
                     templateName: 'components',
-                    templateDirectoryPath,
                     fileName: d.name,
                 })
                 for (let i = 0; i < d.children?.length; i++) {
@@ -97,14 +87,20 @@ export function fileCreateExtension(context: vscode.ExtensionContext) {
                     await createFile({
                         targetPath: fillPath(`${targetPath}/${d.name}`),
                         templateName: 'components',
-                        templateDirectoryPath,
                         fileName: item.name,
                     })
                     if (item.children)
                         treeCreate(item.children, `${targetPath}/${item.name}`)
                 }
             }
-            treeCreate(mockData, path.directory)
+            // 获取全局变量的值
+            const globalVariable = workspaceState.get('myExtension.globalVariable')
+
+            if (!globalVariable) {
+                window.showInformationMessage('please input your requirement to generate the project structure')
+                return
+            }
+            treeCreate(globalVariable, path.directory)
         },
     )
 
