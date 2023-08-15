@@ -25,7 +25,10 @@
     "Other"
   ],
   "activationEvents": [
-    "*"
+    "*",
+		"onCommand:extension.helloWorld",
+		"onCommand:extension.ttShowWindow",
+		"onView:data"
   ],
   "icon": "res/icon-dark.png",
   "scripts": {
@@ -44,14 +47,72 @@
       {
         "command": "Mind-code.createFileFromTemplate",
         "title": "Create File From Template"
-      }
+      },
+      {
+        "command": "Mind-code.requirement",
+        "title": "input requirement"
+      },
+			{
+				"command": "extension.ttShowWindow",
+				"title": "Tt Show Window"
+			},
+			{
+				"command": "data.refresh",
+				"title": "refresh"
+			},
+			{
+				"command": "data.showme",
+				"title": "showme"
+			},
+			{
+				"command": "data.create",
+				"title": "create"
+			}
     ],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "tticon",
+					"icon": "media/dep.png",
+					"title": "tt icon"
+				}
+			]
+		},
+		"views": {
+			"tticon": [
+				{
+					"id": "data",
+					"name": "data"
+				}
+			]
+		},
     "menus": {
+			"view/title": [
+				{
+					"command": "data.create",
+					"group": "1_modification"
+				}
+			],
+			"view/item/context":[
+				{ 
+					"command": "data.showme",
+					"when": "view == data" ,
+					"group": "inline"
+				}
+			],
       "explorer/context": [
         {
           "command": "Mind-code.createFileFromTemplate",
           "group": "1_modification"
-        }
+        },
+        {
+          "command": "Mind-code.requirement",
+          "group": "1_modification"
+        },
+				{
+					"command": "data.create",
+					"group": "1_modification"
+				}
       ]
     },
     "configuration": {

@@ -7,6 +7,8 @@ import type { Variables } from './utils/processContent'
 import { injectVariables } from './utils/processContent'
 import { getConfig } from './utils/config'
 import { getSomeOfPRD } from './api/api'
+import { fileCreateExtension } from './fileCreatExtension'
+import { extension } from './extension'
 
 function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((filePath) => {
@@ -28,6 +30,7 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
 }
 
 export async function activate(context: ExtensionContext) {
+  extension(context)
   async function create(params: {
     targetPath: string
     templateName: string
@@ -97,6 +100,15 @@ export async function activate(context: ExtensionContext) {
     )
   }
 
+  /** 创建输入需求 */
+  async function createReq() {
+    const value = await window.showInputBox({ title: 'prd' })
+    const data = await getSomeOfPRD(value as string)
+    // window.data = data
+    window.showInformationMessage(
+      'Successful create!',
+    )
+  }
   const workspacePath = getWorkspacePath()
 
   if (workspacePath) {
@@ -152,6 +164,16 @@ export async function activate(context: ExtensionContext) {
     )
 
     context.subscriptions.push(cfc)
+
+    /** 创建需求 */
+    const requirement = commands.registerCommand(
+      'Mind-code.requirement', (param) => {
+        createReq()
+      },
+    )
+    context.subscriptions.push(requirement)
+    /** 创建文件 */
+    fileCreateExtension(context)
   }
   else {
     window.showErrorMessage('Please open a workspace first!')
