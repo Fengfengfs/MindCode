@@ -3,10 +3,14 @@
 import * as vscode from 'vscode'
 import { TTTreeNode, testdata } from './treedata'
 import { childrenMockData, mockData } from './mockData'
+import { $subject, myVariable } from './sharedVariable'
 
 export function extension(context: vscode.ExtensionContext) {
   testCustomView(context)
-
+$subject.subscribe((data) =>{
+  debugger
+  console.log(data)
+})
   const outputchannel = vscode.window.createOutputChannel('mychannel')
   const cmdtree = vscode.commands.registerCommand(
     'data.showme',

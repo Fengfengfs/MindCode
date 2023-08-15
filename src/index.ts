@@ -9,6 +9,7 @@ import { getConfig } from './utils/config'
 import { getSomeOfPRD } from './api/api'
 import { fileCreateExtension } from './fileCreatExtension'
 import { extension } from './extension'
+import { $subject, changeMyVariable, myVariable } from './sharedVariable'
 
 function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((filePath) => {
@@ -28,7 +29,9 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
     fs.writeFile(path, contents, cb)
   })
 }
-
+changeMyVariable({a:1,b:2})
+debugger
+$subject.next({a:1,b:2})
 export async function activate(context: ExtensionContext) {
   extension(context)
   async function create(params: {
@@ -68,7 +71,7 @@ export async function activate(context: ExtensionContext) {
         value,
       })
       debugger
-      const data = await getSomeOfPRD()
+      const data = await getSomeOfPRD('测试')
       debugger
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
