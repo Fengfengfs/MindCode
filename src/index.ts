@@ -6,6 +6,7 @@ import { fillPath, getWorkspacePath } from './utils/path'
 import type { Variables } from './utils/processContent'
 import { injectVariables } from './utils/processContent'
 import { getConfig } from './utils/config'
+import { getSomeOfPRD } from './api/api'
 
 function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((filePath) => {
@@ -63,6 +64,9 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
+      debugger
+      const data = await getSomeOfPRD()
+      debugger
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
       //   // window.showSaveDialog({ defaultUri: 'https://musedam.cc', saveLabel: '测试', title: 'asdadasd' })
