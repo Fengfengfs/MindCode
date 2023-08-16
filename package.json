@@ -44,6 +44,14 @@
   },
   "contributes": {
     "commands": [
+			{
+				"command": "data.refresh",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
       {
         "command": "Mind-code.createFileFromTemplate",
         "title": "Create File From Template"
@@ -87,18 +95,23 @@
 			]
 		},
 		"views": {
-			"tticon": [
+      "explorer": [
 				{
 					"id": "data",
-					"name": "data"
+					"name": "Code Mind"
 				}
-			]
+      ]
 		},
     "menus": {
 			"view/title": [
 				{
 					"command": "data.create",
-					"group": "1_modification"
+					"group": "navigation"
+				},
+				{
+					"command": "data.refresh",
+					"when": "view == data",
+					"group": "navigation"
 				}
 			],
 			"view/item/context":[
