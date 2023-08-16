@@ -83,7 +83,7 @@ function generateMarkdownTable(item: Item): string {
   const generateRows = (items: Item[]) => {
     items.forEach((child: Item) => {
       if (child.children.length === 0) {
-        markdownTable += `${child.time || 0}|${child.name}|${child.description}|${child.type}\n`
+        markdownTable += `${child.description}|${child.time || 0}|${child.name}|${child.type}\n`
         totalTime += child.time || 0
         return
       }
