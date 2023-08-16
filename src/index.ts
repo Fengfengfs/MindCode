@@ -30,7 +30,6 @@ export const writeFile = (path: string, contents: string, cb: fs.NoParamCallback
   })
 }
 
-
 export async function activate(context: ExtensionContext) {
   const workspaceState = context.workspaceState
   extension(context)
@@ -70,8 +69,6 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
-      changePath(targetPath)
-      const data = await getSomeOfPRD('测试')
 
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
@@ -82,7 +79,7 @@ export async function activate(context: ExtensionContext) {
 
     const templatePath = join(templateDirectoryPath, templateName)
     const templateStat = statSync(templatePath)
-    
+
     if (templateStat.isDirectory()) {
       walkDir(templatePath, (filePath) => {
         const fileStat = statSync(filePath)
@@ -107,8 +104,11 @@ export async function activate(context: ExtensionContext) {
   /** 创建输入需求 */
   async function createReq() {
     const value = await window.showInputBox({ title: 'prd' })
-    const data = await getSomeOfPRD(value as string)
-    // window.data = data
+
+    const data = (await getSomeOfPRD(value as string)).data.data
+
+    changeMyVariable({ data })
+    $subject.next('change')
     window.showInformationMessage(
       'Successful create!',
     )
@@ -185,6 +185,7 @@ export async function activate(context: ExtensionContext) {
         const folderPath = param.path
         /** 存储-创建需求时所选文件夹路径 */
         workspaceState.update('myExtension.folderPath', folderPath)
+        changePath(folderPath)
         createReq()
       },
     )

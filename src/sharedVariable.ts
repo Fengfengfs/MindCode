@@ -1,17 +1,19 @@
-import { Subject } from 'rxjs';
+import { Subject } from 'rxjs'
 
 
-export let myVariable: any;
-export let path: string;
+export let myVariable = {
+    data: [],
+}
+export let path: string
 
-export const $subject = new Subject();
+export const $subject = new Subject()
 
 
-export const changeMyVariable = (obj) =>{
+export const changeMyVariable = (obj) => {
     myVariable = obj
 }
 
-export const changePath = (string:string) =>{
+export const changePath = (string: string) => {
     path = string
 }
 

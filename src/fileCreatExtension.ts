@@ -7,6 +7,7 @@ import { fillPath } from './utils/path'
 import type { Variables } from './utils/processContent'
 import { injectVariables } from './utils/processContent'
 import { getConfig } from './utils/config'
+import { walkDir } from './index'
 
 export function fileCreateExtension(context: vscode.ExtensionContext) {
     /** 创建文件 */

@@ -6,13 +6,13 @@ const requestApi = axios.create({
 })
 
 export const getSomeOfPRD = async (content: string) => {
-   return (await (requestApi.get('/chat/getPrdInfo?content=我想要做一个大赛投票记录的需求')))
+   return (await (requestApi.get(`/chat/getPrdInfo?content=${content}&fake=true`)))
 }
 
-export const getDetailOfPRD = async (content: string,time:number) => {
-return (await (requestApi.get(`/chat/getNextPrdInfo?content=${content}&time=${time}&fake=true`)))
+export const getDetailOfPRD = async (content: string, time: number) => {
+   return (await (requestApi.get(`/chat/getNextPrdInfo?content=${content}&time=${time}&fake=true`)))
 }
 
 export const getHelpOfPRD = async (content: string) => {
-   return (await requestApi.get(`/chat/getCodeHelp?content=${content}`))
+   return (await requestApi.get(`/chat/getCodeHelp?content=${content}&fake=true`))
 }
