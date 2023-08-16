@@ -29,12 +29,13 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
     fs.writeFile(path, contents, cb)
   })
 }
-changeMyVariable({a:1,b:2})
+changeMyVariable({ a: 1, b: 2 })
 
 setInterval(() => {
-  $subject.next({a:1,b:2})
-}, 1000);
+  $subject.next({ a: 1, b: 2 })
+}, 1000)
 export async function activate(context: ExtensionContext) {
+  const workspaceState = context.workspaceState
   extension(context)
   async function create(params: {
     targetPath: string
@@ -72,9 +73,9 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
-      
+
       const data = await getSomeOfPRD('测试')
-      
+
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
       //   // window.showSaveDialog({ defaultUri: 'https://musedam.cc', saveLabel: '测试', title: 'asdadasd' })
@@ -173,6 +174,19 @@ export async function activate(context: ExtensionContext) {
     /** 创建需求 */
     const requirement = commands.registerCommand(
       'Mind-code.requirement', (param) => {
+        const _templateDirectoryPath = workspace
+          .getConfiguration('goldRight')
+          .get('templateDirectoryPath') as string
+
+        if (!_templateDirectoryPath) {
+          window.showErrorMessage(
+            'The property of \'goldRight.templateDirectoryPath\' is not set.',
+          )
+          return
+        }
+        const folderPath = param.path
+        /** 存储-创建需求时所选文件夹路径 */
+        workspaceState.update('myExtension.folderPath', folderPath)
         createReq()
       },
     )
