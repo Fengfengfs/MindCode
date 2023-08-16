@@ -62,7 +62,15 @@
 			},
 			{
 				"command": "data.showme",
-				"title": "showme"
+				"title": "AI 分析"
+			},
+      {
+				"command": "data.generate",
+				"title": "AI 生成"
+			},
+      {
+				"command": "data.time",
+				"title": "AI TIME"
 			},
 			{
 				"command": "data.create",
@@ -96,6 +104,16 @@
 			"view/item/context":[
 				{ 
 					"command": "data.showme",
+					"when": "view == data" ,
+					"group": "inline"
+				},
+        	{ 
+					"command": "data.generate",
+					"when": "view == data" ,
+					"group": "inline"
+				},
+        	{ 
+					"command": "data.time",
 					"when": "view == data" ,
 					"group": "inline"
 				}

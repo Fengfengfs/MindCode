@@ -30,8 +30,10 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
   })
 }
 changeMyVariable({a:1,b:2})
-debugger
-$subject.next({a:1,b:2})
+
+setInterval(() => {
+  $subject.next({a:1,b:2})
+}, 1000);
 export async function activate(context: ExtensionContext) {
   extension(context)
   async function create(params: {
@@ -70,9 +72,9 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
-      debugger
+      
       const data = await getSomeOfPRD('测试')
-      debugger
+      
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
       //   // window.showSaveDialog({ defaultUri: 'https://musedam.cc', saveLabel: '测试', title: 'asdadasd' })
