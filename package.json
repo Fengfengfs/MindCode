@@ -58,7 +58,7 @@
       },
       {
         "command": "Mind-code.requirement",
-        "title": "input requirement"
+        "title": "Please enter your request"
       },
 			{
 				"command": "extension.ttShowWindow",

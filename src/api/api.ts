@@ -6,13 +6,13 @@ const requestApi = axios.create({
 })
 
 export const getSomeOfPRD = async (content: string) => {
-   return (await (requestApi.get(`/chat/getPrdInfo?content=${content}&fake=true`)))
+   return (await (requestApi.get(`/chat/getPrdInfo?content=${content}&fake=false`)))
 }
 
 export const getDetailOfPRD = async (content: string, time: number) => {
-   return (await (requestApi.get(`/chat/getNextPrdInfo?content=${content}&time=${time}&fake=true`)))
+   return (await (requestApi.get(`/chat/getNextPrdInfo?content=${content}&time=${time}&fake=false`)))
 }
 
 export const getHelpOfPRD = async (content: string) => {
-   return (await requestApi.get(`/chat/getCodeHelp?content=${content}&fake=true`))
+   return (await requestApi.get(`/chat/getCodeHelp?content=${content}&fake=false`))
 }

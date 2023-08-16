@@ -53,10 +53,11 @@ export function extension(context: vscode.ExtensionContext) {
       arr.forEach((ele) => {
         const [name, extension] = ele.name.split('.') || [ele.name, '']
         const url = `${path}/${ele.path}/${ele.name}`
-        if (extension !== 'tsx' && extension !== 'ts')
-          return createFile(path + ele.name)
+        if (extension !== 'tsx' && extension !== 'ts'){
+           return createFile(path + ele.name)
+        }
 
-        walkDir(`/Users/fuxuewei/Public/codes/MindCode/templates/${extension}`, async (filePath: string) => {
+       walkDir(`/Users/tezign/Desktop/Tezign workFlow/gold-right/test/templates/${extension}`, async(filePath:string) => {
           const fileStat = statSync(filePath)
           if (fileStat.isFile()) {
             // if (!fs.existsSync(url)) {
@@ -64,7 +65,6 @@ export function extension(context: vscode.ExtensionContext) {
 
             const content = injectVariables(readFileSync(filePath, 'utf-8'), [{ key: '[COMPONENT_NAME]', value: name }, { key: '[HELP_suggest]', value: help.suggest }, { key: '[HELP_todoList]', value: help.todoList }])
             writeFile(url, content, (err) => {
-
             })
             // }
           }
@@ -100,7 +100,6 @@ function addChildrenTree(context: vscode.ExtensionContext, parentName: string | 
   const childNode = convertToTTTreeNode(data)
   node.children.push(childNode)
   tdata.refresh()
-  console.log(c01, tdata)
 }
 
 /** 生成markdown格式数据 */
