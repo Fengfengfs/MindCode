@@ -2,10 +2,11 @@
 // Import the module and reference it with the alias vscode in your code below
 import fs, { readFileSync, statSync } from 'fs'
 import * as vscode from 'vscode'
-import type { dataInfo } from './treedata'
-import { TTTreeNode, testdata } from './treedata'
+import { TTTreeNode, testdata, dataInfo } from './treedata'
+import { $subject, myVariable,path } from './sharedVariable'
 import { childrenMockData, mockData } from './mockData'
-import { $subject, myVariable } from './sharedVariable'
+import { getDetailOfPRD, getHelpOfPRD } from './api/api'
+import { dirname, isAbsolute, join } from 'path'
 
 const map = new Map()
 const tdata = new testdata()
@@ -27,24 +28,52 @@ export function extension(context: vscode.ExtensionContext) {
   const outputchannel = vscode.window.createOutputChannel('mychannel')
   const cmdtree = vscode.commands.registerCommand(
     'data.showme',
-    (pickitem: TTTreeNode) => {
-      debugger
+    async (pickitem: TTTreeNode) => {
+           // 创建更精细化需求
       outputchannel.show()
       outputchannel.appendLine(`picked=${pickitem.name}`)
       console.log(`picked=${pickitem.name}`)
-      addChildrenTree(context, pickitem.id, mockData)
+      const dataList = (await getDetailInfo(pickitem)).data.data
+      addChildrenTree(context,pickitem.id,dataList)
     },
   )
   context.subscriptions.push(cmdtree)
 
   const cmdtree1 = vscode.commands.registerCommand(
     'data.generate',
-    (pickitem: TTTreeNode) => {
-      debugger
+   async (pickitem: TTTreeNode) => {
+    // 生成文件
       outputchannel.show()
       outputchannel.appendLine(`picked=${pickitem.name}`)
       console.log(`picked=${pickitem.name}`)
-      addChildrenTree(context, pickitem.id, mockData)
+      debugger
+      const arr = flattenNodes(pickitem)
+      arr.forEach(ele =>{
+        debugger
+         const [name,extension] = ele.name.split('.') || [ele.name,'']
+        const url = path+'/'+ele.path+'/'+ele.name
+        if(extension !== 'tsx' && extension !=='ts'){
+         return createFile(path+ele.name)
+        }
+       walkDir(`/Users/tezign/Desktop/Tezign workFlow/gold-right/test/templates/${extension}`, async(filePath:string) => {
+        const fileStat = statSync(filePath)
+        if (fileStat.isFile()) {
+          // if (!fs.existsSync(url)) {
+            const help = (await getHelpOfPRD(ele.description)).data.data
+            debugger
+            const content = injectVariables(readFileSync(filePath, 'utf-8'),  [{key:'[COMPONENT_NAME]',value:name},{ key: "[HELP_suggest]", value: help.suggest },{ key: "[HELP_todoList]", value: help.todoList }])
+            writeFile(url, content, (err) => {
+              debugger
+            })
+          // }
+        }
+      })
+
+
+      })
+      
+      // createFile(path)
+      
     },
   )
   context.subscriptions.push(cmdtree1)
@@ -107,6 +136,22 @@ function creatTimeFile(context: vscode.ExtensionContext, parentName: string | nu
     vscode.window.showErrorMessage('该目录下已经存在估时表')
 }
 
+function createFile(path:string){
+   if (!fs.existsSync(path)) {
+
+     writeFile(path, '', (err) => {
+              if (err){
+
+              }
+            })
+            // const content = readFileSync(path, 'utf-8')
+            // writeFile(targetFilePath, content, (err) => {
+            //   if (err)
+            //     window.showErrorMessage(err.message)
+            // })
+          }
+}
+
 function convertToTTTreeNode(data: dataInfo, parent?: TTTreeNode): TTTreeNode {
   const node = new TTTreeNode(data)
   map.set(node.id, node)
@@ -122,5 +167,32 @@ function convertToTTTreeNode(data: dataInfo, parent?: TTTreeNode): TTTreeNode {
 function testCustomView(context: vscode.ExtensionContext, parent?: TTTreeNode) {
   context.subscriptions.push(tree1)
 }
+
+
+async  function getDetailInfo(item:TTTreeNode){
+  const dataInfo = await getDetailOfPRD(item.description,item.time || 2)
+  return dataInfo
+}
 // this method is called when your extension is deactivated
 export function deactivate() { }
+
+
+function flattenNodes(node): any[] {
+ let flattenedNodes: any[] = [];
+
+ function loop(node: TTTreeNode, parentPath = ''){
+  const [name,] = node.name.split('.')
+ const path = parentPath ? `${parentPath}/${name}` : name;
+  const flattenedNode = { ...node, path };
+  if (!node.children.length) {
+    flattenedNodes.push(flattenedNode);
+  } else {
+    for (const childNode of node.children) {
+       loop(childNode, path);
+    }
+  }
+ }
+ loop(node)
+
+  return flattenedNodes;
+}

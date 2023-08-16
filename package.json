@@ -70,15 +70,15 @@
 			},
 			{
 				"command": "data.showme",
-				"title": "AI 分析"
+				"title": "showme"
 			},
       {
 				"command": "data.generate",
-				"title": "AI 生成"
+				"title": "generate"
 			},
       {
 				"command": "data.time",
-				"title": "AI TIME"
+				"title": "time"
 			},
 			{
 				"command": "data.create",

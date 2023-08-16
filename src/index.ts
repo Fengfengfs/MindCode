@@ -9,9 +9,9 @@ import { getConfig } from './utils/config'
 import { getSomeOfPRD } from './api/api'
 import { fileCreateExtension } from './fileCreatExtension'
 import { extension } from './extension'
-import { $subject, changeMyVariable, myVariable } from './sharedVariable'
+import { $subject, changeMyVariable, changePath, myVariable } from './sharedVariable'
 
-function walkDir(dir: string, callback: (path: string) => void) {
+export function walkDir(dir: string, callback: (path: string) => void) {
   fs.readdirSync(dir).forEach((filePath) => {
     const dirPath = join(dir, filePath)
     const isDirectory = fs.statSync(dirPath).isDirectory()
@@ -21,7 +21,7 @@ function walkDir(dir: string, callback: (path: string) => void) {
   })
 }
 
-const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
+export const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
   fs.mkdir(dirname(path), { recursive: true }, (err) => {
     if (err)
       return cb(err)
@@ -29,11 +29,8 @@ const writeFile = (path: string, contents: string, cb: fs.NoParamCallback) => {
     fs.writeFile(path, contents, cb)
   })
 }
-changeMyVariable({ a: 1, b: 2 })
 
-setInterval(() => {
-  $subject.next({ a: 1, b: 2 })
-}, 1000)
+
 export async function activate(context: ExtensionContext) {
   const workspaceState = context.workspaceState
   extension(context)
@@ -73,7 +70,7 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
-
+      changePath(targetPath)
       const data = await getSomeOfPRD('测试')
 
       // if (inputConfig.required && value) {
@@ -85,6 +82,7 @@ export async function activate(context: ExtensionContext) {
 
     const templatePath = join(templateDirectoryPath, templateName)
     const templateStat = statSync(templatePath)
+    
     if (templateStat.isDirectory()) {
       walkDir(templatePath, (filePath) => {
         const fileStat = statSync(filePath)
