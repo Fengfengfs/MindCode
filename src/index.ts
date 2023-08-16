@@ -73,9 +73,9 @@ export async function activate(context: ExtensionContext) {
         key: inputConfig.key,
         value,
       })
-      debugger
+      
       const data = await getSomeOfPRD('测试')
-      debugger
+      
       // if (inputConfig.required && value) {
       //   // window.showQuickPick(['需求1:12313123', '需求1:12313123', '需求1:12313123', '需求1:12313123'])
       //   // window.showSaveDialog({ defaultUri: 'https://musedam.cc', saveLabel: '测试', title: 'asdadasd' })
