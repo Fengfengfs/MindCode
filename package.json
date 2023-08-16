@@ -66,19 +66,35 @@
 			},
 			{
 				"command": "data.refresh",
-				"title": "refresh"
+				"title": "refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
 			},
 			{
 				"command": "data.showme",
-				"title": "showme"
+				"title": "expendLevel",
+				"icon": {
+					"light": "resources/light/more.svg",
+					"dark": "resources/dark/more.svg"
+				}
 			},
       {
 				"command": "data.generate",
-				"title": "generate"
+				"title": "createFiles",
+				"icon": {
+					"light": "resources/light/export.svg",
+					"dark": "resources/dark/export.svg"
+				}
 			},
       {
 				"command": "data.time",
-				"title": "time"
+				"title": "createTimeTable",
+				"icon": {
+					"light": "resources/light/table.svg",
+					"dark": "resources/dark/table.svg"
+				}
 			},
 			{
 				"command": "data.create",
@@ -104,10 +120,6 @@
 		},
     "menus": {
 			"view/title": [
-				{
-					"command": "data.create",
-					"group": "navigation"
-				},
 				{
 					"command": "data.refresh",
 					"when": "view == data",
